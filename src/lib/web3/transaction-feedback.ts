@@ -150,7 +150,7 @@ export function getTransactionErrorGuidance(
       title: "Network error",
       message: "The network request did not complete cleanly.",
       action: "Reconnect if needed. Retry only when no pending transaction hash is shown.",
-      retryable: false,
+      retryable: true,
     };
   }
 
