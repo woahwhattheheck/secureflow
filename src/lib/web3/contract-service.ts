@@ -2575,7 +2575,7 @@ export class ContractService {
         throw new Error("Transaction failed");
       }
 
-      if (sendResponse.status === "PENDING") {
+      if (sendResponse.status === "PENDING" || sendResponse.status === "DUPLICATE") {
         return await this.waitForConfirmation(txHash);
       }
 
@@ -2711,7 +2711,7 @@ export class ContractService {
         throw new Error("Transaction failed");
       }
 
-      if (sendResponse.status === "PENDING") {
+      if (sendResponse.status === "PENDING" || sendResponse.status === "DUPLICATE") {
         return await this.waitForConfirmation(txHash);
       }
 
@@ -2843,7 +2843,7 @@ export class ContractService {
         throw new Error("Transaction failed");
       }
 
-      if (sendResponse.status === "PENDING") {
+      if (sendResponse.status === "PENDING" || sendResponse.status === "DUPLICATE") {
         return await this.waitForConfirmation(txHash);
       }
 
@@ -2958,7 +2958,7 @@ export class ContractService {
         throw new Error("Transaction failed");
       }
 
-      if (sendResponse.status === "PENDING") {
+      if (sendResponse.status === "PENDING" || sendResponse.status === "DUPLICATE") {
         return await this.waitForConfirmation(txHash);
       }
 
@@ -3075,7 +3075,7 @@ export class ContractService {
         throw new Error("Transaction failed");
       }
 
-      if (sendResponse.status === "PENDING") {
+      if (sendResponse.status === "PENDING" || sendResponse.status === "DUPLICATE") {
         return await this.waitForConfirmation(txHash);
       }
 
@@ -3192,7 +3192,7 @@ export class ContractService {
         throw new Error("Transaction failed");
       }
 
-      if (sendResponse.status === "PENDING") {
+      if (sendResponse.status === "PENDING" || sendResponse.status === "DUPLICATE") {
         return await this.waitForConfirmation(txHash);
       }
 
