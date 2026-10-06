@@ -2907,6 +2907,7 @@ export class ContractService {
               .setTimeout(30)
               .build();
             const newPrepared = await this.rpcServer.prepareTransaction(newTx);
+            this.reportTransactionProgress("signing");
             signedTxXdr = await signTransaction({
               unsignedTransaction: newPrepared.toXDR(),
               address: params.depositor,
@@ -2918,6 +2919,7 @@ export class ContractService {
           throw new Error("No operations found in prepared transaction");
         }
       } else {
+        this.reportTransactionProgress("signing");
         signedTxXdr = await signTransaction({
           unsignedTransaction: prepared.toXDR(),
           address: params.depositor,
@@ -3020,6 +3022,7 @@ export class ContractService {
               .setTimeout(30)
               .build();
             const newPrepared = await this.rpcServer.prepareTransaction(newTx);
+            this.reportTransactionProgress("signing");
             signedTxXdr = await signTransaction({
               unsignedTransaction: newPrepared.toXDR(),
               address: params.depositor,
@@ -3031,6 +3034,7 @@ export class ContractService {
           throw new Error("No operations found in prepared transaction");
         }
       } else {
+        this.reportTransactionProgress("signing");
         signedTxXdr = await signTransaction({
           unsignedTransaction: prepared.toXDR(),
           address: params.depositor,
@@ -3133,6 +3137,7 @@ export class ContractService {
               .setTimeout(30)
               .build();
             const newPrepared = await this.rpcServer.prepareTransaction(newTx);
+            this.reportTransactionProgress("signing");
             signedTxXdr = await signTransaction({
               unsignedTransaction: newPrepared.toXDR(),
               address: params.disputer,
@@ -3144,6 +3149,7 @@ export class ContractService {
           throw new Error("No operations found in prepared transaction");
         }
       } else {
+        this.reportTransactionProgress("signing");
         signedTxXdr = await signTransaction({
           unsignedTransaction: prepared.toXDR(),
           address: params.disputer,
