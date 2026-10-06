@@ -22,11 +22,6 @@ import {
   type TransactionPhase,
   type TransactionProgressListener,
 } from "./transaction-feedback";
-import {
-  PendingTransactionError,
-  type TransactionPhase,
-  type TransactionProgressListener,
-} from "./transaction-feedback";
 import useWalletStore from "@/store/wallet.store";
 
 export interface EscrowData {
@@ -66,15 +61,6 @@ export class ContractService {
   private network: ReturnType<typeof getCurrentNetwork>;
   private client: SecureFlowClient;
   private rpcServer: rpc.Server;
-  private transactionProgressListener?: TransactionProgressListener;
-
-  setTransactionProgressListener(listener?: TransactionProgressListener) {
-    this.transactionProgressListener = listener;
-  }
-
-  private reportTransactionProgress(phase: TransactionPhase, txHash?: string) {
-    this.transactionProgressListener?.({ phase, txHash });
-  }
   private transactionProgressListener?: TransactionProgressListener;
 
   setTransactionProgressListener(listener?: TransactionProgressListener) {
@@ -1073,7 +1059,6 @@ export class ContractService {
 
       const sendResponse =
         await this.rpcServer.sendTransaction(signedTransaction);
-    this.reportTransactionProgress("pending", sendResponse.hash);
     this.reportTransactionProgress("pending", sendResponse.hash);
 
       if (sendResponse.status === "ERROR") {
@@ -2207,8 +2192,6 @@ export class ContractService {
 
           this.reportTransactionProgress("signing");
 
-          this.reportTransactionProgress("signing");
-
           const signedTxXdr = await signTransaction({
             unsignedTransaction: newTx.toXDR(),
             address: walletAddress,
@@ -2221,7 +2204,6 @@ export class ContractService {
 
           const sendResponse =
             await this.rpcServer.sendTransaction(signedTransaction);
-    this.reportTransactionProgress("pending", sendResponse.hash);
     this.reportTransactionProgress("pending", sendResponse.hash);
 
           const txHash = sendResponse.hash || "";
@@ -2319,7 +2301,6 @@ export class ContractService {
 
       // No auth entries, sign normally
       this.reportTransactionProgress("signing");
-      this.reportTransactionProgress("signing");
       const signedTxXdr = await signTransaction({
         unsignedTransaction: prepared.toXDR(),
         address: walletAddress,
@@ -2332,7 +2313,6 @@ export class ContractService {
 
       const sendResponse =
         await this.rpcServer.sendTransaction(signedTransaction);
-    this.reportTransactionProgress("pending", sendResponse.hash);
     this.reportTransactionProgress("pending", sendResponse.hash);
 
       const txHash = sendResponse.hash || "";
@@ -2458,7 +2438,6 @@ export class ContractService {
     }
 
     this.reportTransactionProgress("building");
-    this.reportTransactionProgress("building");
     try {
       // Build transaction manually with beneficiary as source account
       // This ensures the simulation detects auth requirements
@@ -2565,7 +2544,6 @@ export class ContractService {
       const sendResponse =
         await this.rpcServer.sendTransaction(signedTransaction);
     this.reportTransactionProgress("pending", sendResponse.hash);
-    this.reportTransactionProgress("pending", sendResponse.hash);
 
       if (sendResponse.status === "ERROR") {
         throw new Error("Transaction failed");
@@ -2593,7 +2571,6 @@ export class ContractService {
       throw new Error("Beneficiary address is required");
     }
 
-    this.reportTransactionProgress("building");
     this.reportTransactionProgress("building");
     try {
       // Build transaction manually with beneficiary as source account
@@ -2702,7 +2679,6 @@ export class ContractService {
       const sendResponse =
         await this.rpcServer.sendTransaction(signedTransaction);
     this.reportTransactionProgress("pending", sendResponse.hash);
-    this.reportTransactionProgress("pending", sendResponse.hash);
 
       if (sendResponse.status === "ERROR") {
         throw new Error("Transaction failed");
@@ -2731,7 +2707,6 @@ export class ContractService {
       throw new Error("Beneficiary address is required");
     }
 
-    this.reportTransactionProgress("building");
     this.reportTransactionProgress("building");
     try {
       const { Contract, nativeToScVal, TransactionBuilder, Operation, xdr } =
@@ -2835,7 +2810,6 @@ export class ContractService {
       const sendResponse =
         await this.rpcServer.sendTransaction(signedTransaction);
     this.reportTransactionProgress("pending", sendResponse.hash);
-    this.reportTransactionProgress("pending", sendResponse.hash);
 
       if (sendResponse.status === "ERROR") {
         throw new Error("Transaction failed");
@@ -2859,7 +2833,6 @@ export class ContractService {
     if (!params.depositor) {
       throw new Error("Depositor address is required");
     }
-    this.reportTransactionProgress("building");
     this.reportTransactionProgress("building");
     try {
       const { Contract, nativeToScVal, TransactionBuilder, Operation, xdr } =
@@ -2951,7 +2924,6 @@ export class ContractService {
       const sendResponse =
         await this.rpcServer.sendTransaction(signedTransaction);
     this.reportTransactionProgress("pending", sendResponse.hash);
-    this.reportTransactionProgress("pending", sendResponse.hash);
       if (sendResponse.status === "ERROR") {
         throw new Error("Transaction failed");
       }
@@ -2973,7 +2945,6 @@ export class ContractService {
     if (!params.depositor) {
       throw new Error("Depositor address is required");
     }
-    this.reportTransactionProgress("building");
     this.reportTransactionProgress("building");
     try {
       const { Contract, nativeToScVal, TransactionBuilder, Operation, xdr } =
@@ -3066,7 +3037,6 @@ export class ContractService {
       const sendResponse =
         await this.rpcServer.sendTransaction(signedTransaction);
     this.reportTransactionProgress("pending", sendResponse.hash);
-    this.reportTransactionProgress("pending", sendResponse.hash);
       if (sendResponse.status === "ERROR") {
         throw new Error("Transaction failed");
       }
@@ -3088,7 +3058,6 @@ export class ContractService {
     if (!params.disputer) {
       throw new Error("Disputer address is required");
     }
-    this.reportTransactionProgress("building");
     this.reportTransactionProgress("building");
     try {
       const { Contract, nativeToScVal, TransactionBuilder, Operation, xdr } =
@@ -3180,7 +3149,6 @@ export class ContractService {
       );
       const sendResponse =
         await this.rpcServer.sendTransaction(signedTransaction);
-    this.reportTransactionProgress("pending", sendResponse.hash);
     this.reportTransactionProgress("pending", sendResponse.hash);
       if (sendResponse.status === "ERROR") {
         throw new Error("Transaction failed");
@@ -3456,7 +3424,6 @@ export class ContractService {
 
             const newPrepared = await this.rpcServer.prepareTransaction(newTx);
             this.reportTransactionProgress("signing");
-            this.reportTransactionProgress("signing");
             const signedTxXdr = await signTransaction({
               unsignedTransaction: newPrepared.toXDR(),
               address: depositorAddress,
@@ -3469,7 +3436,6 @@ export class ContractService {
 
             const sendResponse =
               await this.rpcServer.sendTransaction(signedTransaction);
-    this.reportTransactionProgress("pending", sendResponse.hash);
     this.reportTransactionProgress("pending", sendResponse.hash);
 
             if (sendResponse.status === "ERROR") {
@@ -3487,7 +3453,6 @@ export class ContractService {
 
       // No auth entries, sign normally
       this.reportTransactionProgress("signing");
-      this.reportTransactionProgress("signing");
       const signedTxXdr = await signTransaction({
         unsignedTransaction: prepared.toXDR(),
         address: depositorAddress,
@@ -3500,7 +3465,6 @@ export class ContractService {
 
       const sendResponse =
         await this.rpcServer.sendTransaction(signedTransaction);
-    this.reportTransactionProgress("pending", sendResponse.hash);
     this.reportTransactionProgress("pending", sendResponse.hash);
 
       if (sendResponse.status === "ERROR") {
@@ -3708,7 +3672,6 @@ export class ContractService {
 
             const newPrepared = await this.rpcServer.prepareTransaction(newTx);
             this.reportTransactionProgress("signing");
-            this.reportTransactionProgress("signing");
             const signedTxXdr = await signTransaction({
               unsignedTransaction: newPrepared.toXDR(),
               address: walletAddress,
@@ -3721,7 +3684,6 @@ export class ContractService {
 
             const sendResponse =
               await this.rpcServer.sendTransaction(signedTransaction);
-    this.reportTransactionProgress("pending", sendResponse.hash);
     this.reportTransactionProgress("pending", sendResponse.hash);
 
             if (sendResponse.status === "ERROR") {
@@ -3739,7 +3701,6 @@ export class ContractService {
 
       // No auth entries, sign normally
       this.reportTransactionProgress("signing");
-      this.reportTransactionProgress("signing");
       const signedTxXdr = await signTransaction({
         unsignedTransaction: prepared.toXDR(),
         address: walletAddress,
@@ -3752,7 +3713,6 @@ export class ContractService {
 
       const sendResponse =
         await this.rpcServer.sendTransaction(signedTransaction);
-    this.reportTransactionProgress("pending", sendResponse.hash);
     this.reportTransactionProgress("pending", sendResponse.hash);
 
       if (sendResponse.status === "ERROR") {
@@ -3845,7 +3805,6 @@ export class ContractService {
 
             const newPrepared = await this.rpcServer.prepareTransaction(newTx);
             this.reportTransactionProgress("signing");
-            this.reportTransactionProgress("signing");
             const signedTxXdr = await signTransaction({
               unsignedTransaction: newPrepared.toXDR(),
               address: walletAddress,
@@ -3858,7 +3817,6 @@ export class ContractService {
 
             const sendResponse =
               await this.rpcServer.sendTransaction(signedTransaction);
-    this.reportTransactionProgress("pending", sendResponse.hash);
     this.reportTransactionProgress("pending", sendResponse.hash);
 
             if (sendResponse.status === "ERROR") {
@@ -3876,7 +3834,6 @@ export class ContractService {
 
       // No auth entries, sign normally
       this.reportTransactionProgress("signing");
-      this.reportTransactionProgress("signing");
       const signedTxXdr = await signTransaction({
         unsignedTransaction: prepared.toXDR(),
         address: walletAddress,
@@ -3889,7 +3846,6 @@ export class ContractService {
 
       const sendResponse =
         await this.rpcServer.sendTransaction(signedTransaction);
-    this.reportTransactionProgress("pending", sendResponse.hash);
     this.reportTransactionProgress("pending", sendResponse.hash);
 
       if (sendResponse.status === "ERROR") {
@@ -3921,8 +3877,6 @@ export class ContractService {
 
       this.reportTransactionProgress("signing");
 
-      this.reportTransactionProgress("signing");
-
       const signedTxXdr = await signTransaction({
         unsignedTransaction: assembledTx.toXDR(),
         address: walletAddress,
@@ -3935,7 +3889,6 @@ export class ContractService {
 
       const sendResponse =
         await this.rpcServer.sendTransaction(signedTransaction);
-    this.reportTransactionProgress("pending", sendResponse.hash);
     this.reportTransactionProgress("pending", sendResponse.hash);
 
       if (sendResponse.status === "ERROR") {
@@ -3967,8 +3920,6 @@ export class ContractService {
 
       this.reportTransactionProgress("signing");
 
-      this.reportTransactionProgress("signing");
-
       const signedTxXdr = await signTransaction({
         unsignedTransaction: assembledTx.toXDR(),
         address: walletAddress,
@@ -3981,7 +3932,6 @@ export class ContractService {
 
       const sendResponse =
         await this.rpcServer.sendTransaction(signedTransaction);
-    this.reportTransactionProgress("pending", sendResponse.hash);
     this.reportTransactionProgress("pending", sendResponse.hash);
 
       if (sendResponse.status === "ERROR") {
@@ -4124,8 +4074,6 @@ export class ContractService {
 
     this.reportTransactionProgress("signing");
 
-    this.reportTransactionProgress("signing");
-
     const signedXdr = await signTransaction({
       unsignedTransaction: (finalPrepared as any).toXDR(),
       address: ownerAddress,
@@ -4136,7 +4084,6 @@ export class ContractService {
       this.network.networkPassphrase,
     );
     const sendResponse = await this.rpcServer.sendTransaction(signedTx);
-    this.reportTransactionProgress("pending", sendResponse.hash);
     this.reportTransactionProgress("pending", sendResponse.hash);
 
     if (sendResponse.status === "ERROR") {
@@ -4191,7 +4138,6 @@ export class ContractService {
 
       const prepared = await this.rpcServer.prepareTransaction(tx);
       this.reportTransactionProgress("signing");
-      this.reportTransactionProgress("signing");
       const signedTxXdr = await signTransaction({
         unsignedTransaction: prepared.toXDR(),
         address: walletAddress,
@@ -4204,7 +4150,6 @@ export class ContractService {
 
       const sendResponse =
         await this.rpcServer.sendTransaction(signedTransaction);
-    this.reportTransactionProgress("pending", sendResponse.hash);
     this.reportTransactionProgress("pending", sendResponse.hash);
       if (sendResponse.status === "ERROR") {
         throw new Error("Transaction failed");
@@ -4373,8 +4318,6 @@ export class ContractService {
 
           this.reportTransactionProgress("signing");
 
-          this.reportTransactionProgress("signing");
-
           const signedTxXdr = await signTransaction({
             unsignedTransaction: newTx.toXDR(),
             address: signerAddress,
@@ -4387,7 +4330,6 @@ export class ContractService {
 
           const sendResponse =
             await this.rpcServer.sendTransaction(signedTransaction);
-    this.reportTransactionProgress("pending", sendResponse.hash);
     this.reportTransactionProgress("pending", sendResponse.hash);
 
           if (sendResponse.status === "ERROR") {
@@ -4407,7 +4349,6 @@ export class ContractService {
     // Use sourceAddress if provided, otherwise use walletAddress
     const signerAddress = sourceAddress || walletAddress;
     this.reportTransactionProgress("signing");
-    this.reportTransactionProgress("signing");
     const signedTxXdr = await signTransaction({
       unsignedTransaction: prepared.toXDR(),
       address: signerAddress,
@@ -4420,7 +4361,6 @@ export class ContractService {
 
     const sendResponse =
       await this.rpcServer.sendTransaction(signedTransaction);
-    this.reportTransactionProgress("pending", sendResponse.hash);
     this.reportTransactionProgress("pending", sendResponse.hash);
 
     if (sendResponse.status === "ERROR") {
@@ -4437,24 +4377,7 @@ export class ContractService {
   /**
    * Wait for transaction confirmation
    */
-  public async getTransactionStatus(
-    hash: string,
-  ): Promise<"success" | "failed" | "pending" | "not_found"> {
-    const txStatus = await this.rpcServer.getTransaction(hash);
-    switch (txStatus.status as string) {
-      case "SUCCESS":
-        return "success";
-      case "FAILED":
-        return "failed";
-      case "PENDING":
-        return "pending";
-      case "NOT_FOUND":
-      default:
-        return "not_found";
-    }
-  }
-
-  /**
+    /**
    * Preserve an ambiguous transaction hash instead of inviting a blind retry.
    */
   public async getTransactionStatus(
