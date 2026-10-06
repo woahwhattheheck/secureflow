@@ -14,12 +14,15 @@ import ApprovalsPage from "./pages/ApprovalsPage";
 import FreelancersPage from "./pages/FreelancersPage";
 import MessagesPage from "./pages/MessagesPage";
 import Debugger from "./pages/Debugger";
+import { PanelErrorBoundary } from "./components/panel-error-boundary";
 
 const AppLayout = () => (
   <>
     <Navbar />
     <div className="pt-16">
-      <Outlet />
+      <PanelErrorBoundary>
+        <Outlet />
+      </PanelErrorBoundary>
     </div>
     <NewMessageWatcher />
     <EscrowPoller />
