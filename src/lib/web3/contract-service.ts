@@ -71,6 +71,31 @@ export class ContractService {
     this.transactionProgressListener?.({ phase, txHash });
   }
 
+  private async sendSignedTransaction(
+    signedTransaction: ReturnType<typeof TransactionBuilder.fromXDR>,
+  ) {
+    const localHash = signedTransaction.hash().toString("hex");
+
+    let sendResponse;
+    try {
+      sendResponse = await this.rpcServer.sendTransaction(signedTransaction);
+    } catch {
+      this.reportTransactionProgress("pending", localHash);
+      throw new PendingTransactionError(localHash);
+    }
+
+    if (sendResponse.status === "TRY_AGAIN_LATER") {
+      throw new Error("Transaction should be retried later");
+    }
+
+    const txHash = sendResponse.hash || localHash;
+    if (sendResponse.status !== "ERROR") {
+      this.reportTransactionProgress("pending", txHash);
+    }
+
+    return { sendResponse, txHash };
+  }
+
   constructor(contractId?: string) {
     this.contractId = contractId || CONTRACTS.SECUREFLOW_ESCROW;
     this.network = getCurrentNetwork();
@@ -2543,19 +2568,18 @@ export class ContractService {
         this.network.networkPassphrase,
       );
 
-      const sendResponse =
-        await this.rpcServer.sendTransaction(signedTransaction);
-    this.reportTransactionProgress("pending", sendResponse.hash);
+      const { sendResponse, txHash } =
+        await this.sendSignedTransaction(signedTransaction);
 
       if (sendResponse.status === "ERROR") {
         throw new Error("Transaction failed");
       }
 
-      if (sendResponse.status === "PENDING" && sendResponse.hash) {
-        return await this.waitForConfirmation(sendResponse.hash);
+      if (sendResponse.status === "PENDING") {
+        return await this.waitForConfirmation(txHash);
       }
 
-      return sendResponse.hash || "";
+      return txHash;
     } catch (error: any) {
       throw error;
     }
@@ -2680,19 +2704,18 @@ export class ContractService {
         this.network.networkPassphrase,
       );
 
-      const sendResponse =
-        await this.rpcServer.sendTransaction(signedTransaction);
-    this.reportTransactionProgress("pending", sendResponse.hash);
+      const { sendResponse, txHash } =
+        await this.sendSignedTransaction(signedTransaction);
 
       if (sendResponse.status === "ERROR") {
         throw new Error("Transaction failed");
       }
 
-      if (sendResponse.status === "PENDING" && sendResponse.hash) {
-        return await this.waitForConfirmation(sendResponse.hash);
+      if (sendResponse.status === "PENDING") {
+        return await this.waitForConfirmation(txHash);
       }
 
-      return sendResponse.hash || "";
+      return txHash;
     } catch (error: any) {
       throw error;
     }
@@ -2813,19 +2836,18 @@ export class ContractService {
         this.network.networkPassphrase,
       );
 
-      const sendResponse =
-        await this.rpcServer.sendTransaction(signedTransaction);
-    this.reportTransactionProgress("pending", sendResponse.hash);
+      const { sendResponse, txHash } =
+        await this.sendSignedTransaction(signedTransaction);
 
       if (sendResponse.status === "ERROR") {
         throw new Error("Transaction failed");
       }
 
-      if (sendResponse.status === "PENDING" && sendResponse.hash) {
-        return await this.waitForConfirmation(sendResponse.hash);
+      if (sendResponse.status === "PENDING") {
+        return await this.waitForConfirmation(txHash);
       }
 
-      return sendResponse.hash || "";
+      return txHash;
     } catch (error: any) {
       throw error;
     }
@@ -2929,16 +2951,18 @@ export class ContractService {
         signedTxXdr,
         this.network.networkPassphrase,
       );
-      const sendResponse =
-        await this.rpcServer.sendTransaction(signedTransaction);
-    this.reportTransactionProgress("pending", sendResponse.hash);
+      const { sendResponse, txHash } =
+        await this.sendSignedTransaction(signedTransaction);
+
       if (sendResponse.status === "ERROR") {
         throw new Error("Transaction failed");
       }
-      if (sendResponse.status === "PENDING" && sendResponse.hash) {
-        return await this.waitForConfirmation(sendResponse.hash);
+
+      if (sendResponse.status === "PENDING") {
+        return await this.waitForConfirmation(txHash);
       }
-      return sendResponse.hash || "";
+
+      return txHash;
     } catch (error: any) {
       throw error;
     }
@@ -3044,16 +3068,18 @@ export class ContractService {
         signedTxXdr,
         this.network.networkPassphrase,
       );
-      const sendResponse =
-        await this.rpcServer.sendTransaction(signedTransaction);
-    this.reportTransactionProgress("pending", sendResponse.hash);
+      const { sendResponse, txHash } =
+        await this.sendSignedTransaction(signedTransaction);
+
       if (sendResponse.status === "ERROR") {
         throw new Error("Transaction failed");
       }
-      if (sendResponse.status === "PENDING" && sendResponse.hash) {
-        return await this.waitForConfirmation(sendResponse.hash);
+
+      if (sendResponse.status === "PENDING") {
+        return await this.waitForConfirmation(txHash);
       }
-      return sendResponse.hash || "";
+
+      return txHash;
     } catch (error: any) {
       throw error;
     }
@@ -3159,16 +3185,18 @@ export class ContractService {
         signedTxXdr,
         this.network.networkPassphrase,
       );
-      const sendResponse =
-        await this.rpcServer.sendTransaction(signedTransaction);
-    this.reportTransactionProgress("pending", sendResponse.hash);
+      const { sendResponse, txHash } =
+        await this.sendSignedTransaction(signedTransaction);
+
       if (sendResponse.status === "ERROR") {
         throw new Error("Transaction failed");
       }
-      if (sendResponse.status === "PENDING" && sendResponse.hash) {
-        return await this.waitForConfirmation(sendResponse.hash);
+
+      if (sendResponse.status === "PENDING") {
+        return await this.waitForConfirmation(txHash);
       }
-      return sendResponse.hash || "";
+
+      return txHash;
     } catch (error: any) {
       throw error;
     }
