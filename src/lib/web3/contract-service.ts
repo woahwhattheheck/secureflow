@@ -2519,6 +2519,7 @@ export class ContractService {
               .setTimeout(30)
               .build();
 
+            this.reportTransactionProgress("signing");
             signedTxXdr = await signTransaction({
               unsignedTransaction: newTx.toXDR(),
               address: beneficiary,
@@ -2530,6 +2531,7 @@ export class ContractService {
           throw new Error("No operations found in prepared transaction");
         }
       } else {
+        this.reportTransactionProgress("signing");
         signedTxXdr = await signTransaction({
           unsignedTransaction: prepared.toXDR(),
           address: beneficiary,
@@ -2654,6 +2656,7 @@ export class ContractService {
               .build();
 
             const newPrepared = await this.rpcServer.prepareTransaction(newTx);
+            this.reportTransactionProgress("signing");
             signedTxXdr = await signTransaction({
               unsignedTransaction: newPrepared.toXDR(),
               address: params.beneficiary,
@@ -2665,6 +2668,7 @@ export class ContractService {
           throw new Error("No operations found in prepared transaction");
         }
       } else {
+        this.reportTransactionProgress("signing");
         signedTxXdr = await signTransaction({
           unsignedTransaction: prepared.toXDR(),
           address: params.beneficiary,
@@ -2785,6 +2789,7 @@ export class ContractService {
               .build();
 
             const newPrepared = await this.rpcServer.prepareTransaction(newTx);
+            this.reportTransactionProgress("signing");
             signedTxXdr = await signTransaction({
               unsignedTransaction: newPrepared.toXDR(),
               address: params.beneficiary,
@@ -2796,6 +2801,7 @@ export class ContractService {
           throw new Error("No operations found in prepared transaction");
         }
       } else {
+        this.reportTransactionProgress("signing");
         signedTxXdr = await signTransaction({
           unsignedTransaction: prepared.toXDR(),
           address: params.beneficiary,
